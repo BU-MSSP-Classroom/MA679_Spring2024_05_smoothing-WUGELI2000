@@ -77,12 +77,20 @@ Use nonlinear methods discussed in ch 7 of the book.  Can you make a better pred
 
 Your code:
 ```{r,echo=TRUE}
-#
-#
+fit.poly = lm(`SalePrice` ~ poly(`Lot Area`, 4), data = ames_raw_2008)
+summary(fit.poly)
+
+poly.pred = predict(fit.poly, 
+                    newdata = ames_raw_2009, 
+                    se = TRUE)
+
+poly.actual = ames_raw_2009$`SalePrice`
+calc_loss(poly.pred$fit, poly.actual)
 ```
 
 Your answer:
 
+I used polynomial regression and I think this model maybe not a better prediction.
 ~~~
 Please write your answer in full sentences.
 
@@ -102,11 +110,20 @@ Try the method described in Ch7.  See if you can improve the performance.
 
 Your code:
 ```{r,echo=TRUE}
-#
-#
+fit.poly = lm(SURVIVED_bin ~ poly(AGE, 4), data = Train_COVID)
+summary(fit.poly)
+
+poly.pred = predict(fit.poly, 
+                    newdata = Test_COVID, 
+                    se = TRUE)
+
+poly.actual = Test_COVID$SURVIVED_bin
+calc_loss(poly.pred$fit, poly.actual)
 ```
 
 Your answer:
+
+I used polynomial regression and I think this model is a better prediction.
 
 ~~~
 Please write your answer in full sentences.
@@ -129,8 +146,16 @@ data(College,package = "ISLR2")
 
 Your code:
 ```{r,echo=TRUE}
-#
-#
+set.seed(1)
+nrow(College)
+train = sample(seq(777), 520, replace = FALSE)
+College.train = College[train, ]
+College.test = College[-train, ]
+model.lm <- lm(Outstate ~ Private + Top10perc + Expend, data = College.train)
+summary(model.lm)
+
+pred.lm <- predict(model.lm, newdata = College.test)
+sum((pred.lm-College.test$Outstate)^2)
 ```
 
 Your answer:
@@ -148,8 +173,11 @@ Please write your answer in full sentences.
 
 Your code:
 ```{r,echo=TRUE}
-#
-#
+set.seed(1)
+model.gam <- gam(Outstate ~ Private + bs(Top10perc) + poly(Expend, 2), data = College.train)
+
+summary(model.gam)
+plot(model.gam, se = T)
 ```
 
 Your answer:
@@ -166,8 +194,8 @@ Please write your answer in full sentences.
 
 Your code:
 ```{r,echo=TRUE}
-#
-#
+College.pred <- predict(model.gam, newdata = College.test)
+sum((College.pred - College.test$Outstate)^2)
 ```
 
 Your answer:
@@ -189,6 +217,7 @@ Your code:
 ```
 
 Your answer:
+Yes, since when use non-linear, square error become smaller.
 
 ~~~
 Please write your answer in full sentences.
